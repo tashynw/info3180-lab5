@@ -7,6 +7,7 @@ This file creates your application.
 
 from app import app
 from flask import render_template, request, jsonify, send_file
+from app.models import Movie
 import os
 
 
@@ -31,12 +32,13 @@ def form_errors(form):
     for field, errors in form.errors.items():
         for error in errors:
             message = u"Error in the %s field - %s" % (
-                    getattr(form, field).label.text,
-                    error
-                )
+                getattr(form, field).label.text,
+                error
+            )
             error_messages.append(message)
 
     return error_messages
+
 
 @app.route('/<file_name>.txt')
 def send_text_file(file_name):
