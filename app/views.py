@@ -10,6 +10,7 @@ from flask import render_template, request, jsonify, send_file
 from app.models import Movie
 from app.forms import MovieForm
 from werkzeug.utils import secure_filename
+from flask_wtf.csrf import generate_csrf
 import os
 
 
@@ -20,6 +21,11 @@ import os
 @app.route('/')
 def index():
     return jsonify(message="This is the beginning of our API")
+
+
+@app.route('/api/v1/csrf-token', methods=['GET'])
+def get_csrf():
+    return jsonify({'csrf_token': generate_csrf()})
 
 
 @app.route('/api/v1/movies', methods=["POST"])

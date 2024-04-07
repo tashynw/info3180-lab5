@@ -9,7 +9,7 @@ class Movie(db.Model):
     title = db.Column(db.String(128))
     description = db.Column(db.String(128))
     poster = db.Column(db.String(128))
-    created_at = db.Column(db.DateTime, server_default=func.now())
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     def is_authenticated(self):
         return True
