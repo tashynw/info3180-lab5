@@ -6,7 +6,7 @@ This file creates your application.
 """
 
 from app import app, db
-from flask import render_template, request, jsonify, send_file
+from flask import render_template, request, jsonify, send_file, send_from_directory
 from app.models import Movie
 from app.forms import MovieForm
 from werkzeug.utils import secure_filename
@@ -57,12 +57,27 @@ def movies():
         }), 400
 
 
+@app.route('/api/v1/movies', methods=["GET"])
+def add_movies():
+    # GET
+    movies = db.session.execute(db.select(Movie)).scalars().all()
+    return jsonify({
+        "movies": [{"id": m.id, "title": m.title, "description": m.description, "poster": m.poster} for m in movies]
+    })
+
+
+@app.route('/api/v1/posters/<filename>')
+def get_image(filename):
+    return send_from_directory(os.path.join(os.getcwd(), app.config['UPLOAD_FOLDER']), filename)
+
 ###
 # The functions below should be applicable to all Flask apps.
 ###
 
 # Here we define a function to collect form errors from Flask-WTF
 # which we can later use
+
+
 def form_errors(form):
     error_messages = []
     """Collects form errors"""
