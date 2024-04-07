@@ -1,7 +1,6 @@
 <template>
   <form
     @submit.prevent="saveMovie"
-    ref="movieFormRef"
     id="movieForm"
     style="display: flex; flex-direction: column; gap: 20px"
   >
@@ -47,7 +46,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, router } from "vue";
+import { ref, onMounted } from "vue";
 
 let csrf_token = ref("");
 let formErrors = ref([]);
@@ -89,7 +88,6 @@ function saveMovie() {
         formErrors.value = data?.errors;
       } else {
         successfullyCreated.value = true;
-        this.$refs.movieFormRef.reset();
       }
     })
     .catch(function (error) {
