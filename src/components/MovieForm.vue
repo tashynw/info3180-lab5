@@ -4,6 +4,25 @@
     id="movieForm"
     style="display: flex; flex-direction: column; gap: 20px"
   >
+    <div class="alert alert-success" role="alert" v-if="successfullyCreated">
+      Form successfully saved
+    </div>
+    <div
+      class="alert alert-danger"
+      role="alert"
+      v-if="formErrors && formErrors.length > 0 && !successfullyCreated"
+    >
+      <li v-for="error in formErrors">
+        {{ error }}
+      </li>
+    </div>
+    <div
+      class="alert alert-danger"
+      role="alert"
+      v-if="formErrors == true && !successfullyCreated"
+    >
+      An error occurred while creating the movie
+    </div>
     <div class="form-group">
       <label for="title">Title</label>
       <input name="title" class="form-control" placeholder="Enter title" />
@@ -30,6 +49,8 @@
 import { ref, onMounted } from "vue";
 
 let csrf_token = ref("");
+let formErrors = ref([]);
+let successfullyCreated = ref(false);
 
 function getCsrfToken() {
   fetch("/api/v1/csrf-token")
@@ -58,11 +79,20 @@ function saveMovie() {
       return response.json();
     })
     .then(function (data) {
-      // display a success message
-      console.log(data);
+      if (
+        data &&
+        Object.keys(data).length > 0 &&
+        Object.keys(data)[0] == "errors"
+      ) {
+        successfullyCreated.value = false;
+        formErrors.value = data?.errors;
+      } else {
+        successfullyCreated.value = true;
+      }
     })
     .catch(function (error) {
-      console.log(error);
+      formErrors.value = true;
+      successfullyCreated.value = false;
     });
 }
 </script>
